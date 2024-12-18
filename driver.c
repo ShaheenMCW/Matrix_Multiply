@@ -55,40 +55,6 @@ int compare_matrices(int **A, int **B, int size)
     return 1;
 }
 
-// // Matrix multiplication - ijk
-// int **matrix_multiply_ijk(int **A, int **B, int size)
-// {
-//     int **C = (int **)malloc(size * sizeof(int *));
-//     for (int i = 0; i < size; i++)
-//     {
-//         C[i] = (int *)malloc(size * sizeof(int));
-//     }
-
-//     for (int i = 0; i < size; i++)
-//     {
-//         for (int j = 0; j < size; j++)
-//         {
-//             C[i][j] = 0;
-//             for (int k = 0; k < size; k++)
-//             {
-//                 C[i][j] += A[i][k] * B[k][j];
-//             }
-//         }
-//     }
-//     return C;
-// }
-
-// // Other matrix multiplication methods go here...
-
-// // Free dynamically allocated matrix
-// void free_matrix(int **matrix, int size)
-// {
-//     for (int i = 0; i < size; i++)
-//     {
-//         free(matrix[i]);
-//     }
-//     free(matrix);
-// }
 
 int main()
 {
@@ -108,10 +74,8 @@ int main()
         return 1;
     }
 
-    // Write the header for the CSV file
     fprintf(output_file, "Test Case,Matrix Size,Method,Time Taken (Seconds)\n");
 
-    // Iterate through each unit_xxx folder
     while ((entry = readdir(dir)) != NULL)
     {
         if (entry->d_type == DT_DIR && strncmp(entry->d_name, "unit_", 5) == 0)
@@ -119,7 +83,6 @@ int main()
             char unit_path[256];
             snprintf(unit_path, sizeof(unit_path), "%s/%s", BASE_DIR, entry->d_name);
 
-            // Construct file paths for A.txt, B.txt, and C.txt
             char file_A[256], file_B[256], file_C[256];
             snprintf(file_A, sizeof(file_A), "%s/A.txt", unit_path);
             snprintf(file_B, sizeof(file_B), "%s/B.txt", unit_path);
@@ -134,13 +97,12 @@ int main()
 
             if (A && B && C)
             {
-                // Test each multiplication method
                 char *methods[] = {"ijk", "ikj", "jik", "kij", "kji"};
                 int **result;
 
                 for (int m = 0; m < 5; m++)
                 {
-                    // Perform matrix multiplication for the current method
+                    
                     switch (m)
                     {
                     case 0:
@@ -160,7 +122,6 @@ int main()
                         break;
                     }
 
-                    // Compare result with C
                     if (compare_matrices(result, C, size_A))
                     {
                         printf("%s method: Matrix multiplication result matches the expected matrix.\n", methods[m]);
@@ -170,14 +131,11 @@ int main()
                         printf("%s method: Matrix multiplication result does NOT match the expected matrix.\n", methods[m]);
                     }
 
-                    // Write results to the CSV file
-                    fprintf(output_file, "%s,%d,%s,%.6f\n", entry->d_name, size_A, methods[m], 0.0); // Placeholder for time
+                    fprintf(output_file, "%s,%d,%s,%.6f\n", entry->d_name, size_A, methods[m], 0.0); 
 
-                    // Free memory
                     free_matrix(result, size_A);
                 }
 
-                // Free input matrices
                 free_matrix(A, size_A);
                 free_matrix(B, size_B);
                 free_matrix(C, size_C);
@@ -189,7 +147,6 @@ int main()
         }
     }
 
-    // Close files
     closedir(dir);
     fclose(output_file);
 
